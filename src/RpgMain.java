@@ -46,10 +46,16 @@ public class RpgMain {
                 calculatingWhoWins(playerOneHealth, playerTwoHealth);
             }
             checkPlayersMoney();
-            playerOneBuyTime();
             System.out.println(shopMessage);
+            playerOneBuyTime();
             playerTwoBuyTime();
-
+            int exitTheGameFirstPlayer = playerOneBuyTime();
+            int exitTheGameSecondPlayer = playerTwoBuyTime();
+            if (exitTheGameFirstPlayer == 2) {
+                break;
+            } else if (exitTheGameSecondPlayer == 2) {
+                break;
+            }
         }
     }
 
@@ -102,11 +108,10 @@ public class RpgMain {
         }
     }
 
-    static void playerOneBuyTime() {
+    static int playerOneBuyTime() {
         int tmp = 0;
         while (balancePlayerOne > 0 && tmp == 0) {
             System.out.println(playerOneName + " has " + balancePlayerOne);
-            System.out.println(shopMessage);
             System.out.println(playerOneName + "'s turn to buy");
             int playerOneBuyTime = scanner.nextInt();
             switch (playerOneBuyTime) {
@@ -114,31 +119,33 @@ public class RpgMain {
                     balancePlayerOne -= 100;
                     minAttackPlayerOne += 5;
                     maxAttackPlayerOne += 5;
-                    continue;
+                    break;
                 case 2:
                     balancePlayerOne -= 100;
                     minAttackPlayerTwo -= 5;
                     maxAttackPlayerTwo -= 5;
-                    continue;
+                    break;
                 case 3:
                     balancePlayerOne -= 300;
                     healthArray[0] += 50;
-                    continue;
+                    break;
                 case 4:
                     balancePlayerOne -= 400;
                     boolean flag = new Random().nextInt(5) == 0;
                     isPlayerOneCriticalAttack(flag);
-                    continue;
+                    break;
                 case 5:
                     tmp += 1;
                     break;
                 case 6:
+                    tmp += 2;
                     break;
             }
         }
+        return tmp;
     }
 
-    static void playerTwoBuyTime() {
+    static int playerTwoBuyTime() {
         int tmp = 0;
         while (balancePlayerTwo > 0 && tmp == 0) {
             System.out.println(playerTwoName + " has " + balancePlayerTwo);
@@ -168,9 +175,11 @@ public class RpgMain {
                     tmp += 1;
                     break;
                 case 6:
+                    tmp += 2;
                     break;
             }
         }
+        return tmp;
     }
 
     static int calculateDamageForFirstPlayer() {
@@ -180,11 +189,13 @@ public class RpgMain {
     static int calculateDamageForSecondPlayer() {
         return (int) ((Math.random() * (maxAttackPlayerTwo - minAttackPlayerTwo)) + minAttackPlayerTwo);
     }
-    static boolean isPlayerOneCriticalAttack(boolean flag){
+
+    static boolean isPlayerOneCriticalAttack(boolean flag) {
         boolean playerOneCriticalAttack = flag;
         return playerOneCriticalAttack = new Random().nextInt(7) == 0;
     }
-    static boolean isPlayerTwoCriticalAttack(boolean flag){
+
+    static boolean isPlayerTwoCriticalAttack(boolean flag) {
         boolean playerTwoCriticalAttack;
         return playerTwoCriticalAttack = new Random().nextInt(7) == 0;
     }
