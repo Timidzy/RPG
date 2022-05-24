@@ -9,7 +9,7 @@ public class RpgMain {
     static String shopMessage = "Hey!\nI see u have earned some cash!\nDo u wanna buy some goods?" +
             "\n1 - Sword (will give u + 5 damage) - cost: 100\n2 - shield (u will get 5 less damage)" +
             " - cost: 100\n3 - armor (u will have 50 health more) - cost: 300\n4 - lucky amulet" +
-            " (ur critical chance will grow from 25% to 40%) - cost:400\n5 - don't " +
+            " (ur critical chance will grow from 25% to 40%) - cost: 400\n5 - don't " +
             "buy anything\n6 - exit from the game";
     static int[] healthArray = new int[]{100, 100};
     static int balancePlayerOne = 0;
@@ -18,8 +18,7 @@ public class RpgMain {
     static int maxAttackPlayerOne = minAttackPlayerOne + 14;
     static int minAttackPlayerTwo = 1;
     static int maxAttackPlayerTwo = minAttackPlayerTwo + 14;
-    static boolean playerOneCriticalAttack = new Random().nextInt(7) == 0;
-    static boolean playerTwoCriticalAttack = new Random().nextInt(7) == 0;
+    static boolean flag = new Random().nextInt(7) == 0;
 
     public static void main(String[] args) {
         startFight();
@@ -34,7 +33,10 @@ public class RpgMain {
                 int playerTwoAttack = calculateDamageForSecondPlayer();
                 System.out.println(helloMsg);
                 scanner.nextLine();
-                criticalAttack(playerOneAttack, playerTwoAttack);
+                boolean playerOneCriticalAttack = isPlayerOneCriticalAttack(flag);
+                boolean playerTwoCriticalAttack = isPlayerTwoCriticalAttack(flag);
+
+                criticalAttack(playerOneAttack, playerTwoAttack, playerOneCriticalAttack, playerTwoCriticalAttack);
                 playerOneHealth -= playerTwoAttack;
                 playerTwoHealth -= playerOneAttack;
                 System.out.println(playerOneName + " gets " + playerTwoAttack + " damage, " + "now "
@@ -61,7 +63,8 @@ public class RpgMain {
         return scanner.nextLine();
     }
 
-    static void criticalAttack(int playerOneAttack, int playerTwoAttack) {
+    static void criticalAttack(int playerOneAttack, int playerTwoAttack, boolean playerOneCriticalAttack,
+                               boolean playerTwoCriticalAttack) {
         if (playerOneCriticalAttack) {
             playerOneAttack *= 2;
             System.out.println(playerOneName + " has critical hit");
@@ -100,7 +103,8 @@ public class RpgMain {
     }
 
     static void playerOneBuyTime() {
-        while (balancePlayerOne > 0) {
+        int tmp = 0;
+        while (balancePlayerOne > 0 && tmp == 0) {
             System.out.println(playerOneName + " has " + balancePlayerOne);
             System.out.println(shopMessage);
             System.out.println(playerOneName + "'s turn to buy");
@@ -122,17 +126,21 @@ public class RpgMain {
                     continue;
                 case 4:
                     balancePlayerOne -= 400;
-                    playerOneCriticalAttack = new Random().nextInt(5) == 0;
+                    boolean flag = new Random().nextInt(5) == 0;
+                    isPlayerOneCriticalAttack(flag);
                     continue;
                 case 5:
+                    tmp += 1;
                     break;
-                default:
+                case 6:
+                    break;
             }
         }
     }
 
     static void playerTwoBuyTime() {
-        while (balancePlayerTwo > 0) {
+        int tmp = 0;
+        while (balancePlayerTwo > 0 && tmp == 0) {
             System.out.println(playerTwoName + " has " + balancePlayerTwo);
             System.out.println(playerTwoName + "'s turn to buy");
             int playerTwoBuyTime = scanner.nextInt();
@@ -153,11 +161,14 @@ public class RpgMain {
                     continue;
                 case 4:
                     balancePlayerTwo -= 400;
-                    playerTwoCriticalAttack = new Random().nextInt(5) == 0;
+                    boolean flag = new Random().nextInt(5) == 0;
+                    isPlayerTwoCriticalAttack(flag);
                     continue;
                 case 5:
+                    tmp += 1;
                     break;
-                default:
+                case 6:
+                    break;
             }
         }
     }
@@ -168,5 +179,13 @@ public class RpgMain {
 
     static int calculateDamageForSecondPlayer() {
         return (int) ((Math.random() * (maxAttackPlayerTwo - minAttackPlayerTwo)) + minAttackPlayerTwo);
+    }
+    static boolean isPlayerOneCriticalAttack(boolean flag){
+        boolean playerOneCriticalAttack = flag;
+        return playerOneCriticalAttack = new Random().nextInt(7) == 0;
+    }
+    static boolean isPlayerTwoCriticalAttack(boolean flag){
+        boolean playerTwoCriticalAttack;
+        return playerTwoCriticalAttack = new Random().nextInt(7) == 0;
     }
 }
